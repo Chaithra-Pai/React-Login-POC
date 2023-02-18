@@ -1,6 +1,6 @@
 import { FETCH_JWT_TOKEN } from "./types";
 
-const initState = { accessToken: "" };
+const initState = { accessToken: "",error:"" };
 
 export default function (state = initState, action) {
     switch (action.type) {

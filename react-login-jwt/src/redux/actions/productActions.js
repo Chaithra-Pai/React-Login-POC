@@ -5,16 +5,15 @@ import {
 } from "./types";
 
 export const fetchProducts = () => (dispatch) => {
-  fetch("http://localhost:8000/products")
-    .then((res) => res.json())
-    .catch((err) =>
-      fetch("db.json")
+  fetch("http://localhost:3000/products",{  
+    method: 'GET',
+    headers: {
+      authorization:localStorage.getItem("accessToken")
+    }})
         .then((res) => res.json())
-        .then((data) => data.products)
-    )
     .then((data) => {
       dispatch({ type: FETCH_PRODUCTS, payload: data });
-    });
+    }).catch((error)=>console.log(error));
 };
 
 export const filterProducts = (products, size) => (dispatch) => {
