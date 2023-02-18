@@ -1,29 +1,30 @@
 import {
-  CLEAR_PRODUCT_ERROR,
+	CLEAR_PRODUCT_ERROR,
 	FETCH_PRODUCTS,
 	FETCH_PRODUCTS_FAILED,
 	FILTER_PRODUCTS_BY_SIZE,
 	ORDER_PRODUCTS_BY_PRICE,
 } from './types';
 
+import axios from 'axios'
 export const fetchProducts = () => (dispatch) => {
-	fetch('http://localhost:3000/products', {
+	axios.get('http://localhost:3000/products', {
 		method: 'GET',
 		headers: {
 			authorization: localStorage.getItem('accessToken'),
-		},
+		}
 	})
-		.then((res) => res.json())
-		.then((data) => {
-			dispatch({ type: FETCH_PRODUCTS, payload: data });
+		.then((response) => {
+			console.log(response, "successs")
+			dispatch({ type: FETCH_PRODUCTS, payload: response.data });
 		})
-		.catch((error) =>{console.log(error); dispatch({ type: FETCH_PRODUCTS_FAILED, payload: error })});
+		.catch((error) => { console.log(error, "faileddd"); dispatch({ type: FETCH_PRODUCTS_FAILED, payload: error }) });
 };
 
-export const clearProductError=()=>{
-return ((dispatch)=>{
-  dispatch({type:CLEAR_PRODUCT_ERROR})
-})
+export const clearProductError = () => {
+	return ((dispatch) => {
+		dispatch({ type: CLEAR_PRODUCT_ERROR })
+	})
 }
 export const filterProducts = (products, size) => (dispatch) => {
 	dispatch({

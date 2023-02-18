@@ -10,7 +10,7 @@ const ProductList = () => {
 
 	const cartItems = useSelector((state) => state.cart.items);
 	const { items, productFetchError } = useSelector((state) => state.products);
-
+console.log(items)
 	useEffect(() => {
     console.log(productFetchError)
 		if (!productFetchError) {
@@ -23,7 +23,7 @@ const ProductList = () => {
 	}, []);
 
 
-	const productItems = items.map((product) => (
+	const productItems = items?.map((product) => (
 		<div className="col-md-4" key={product.id}>
 			<div className="thumbnail text-center">
 				<a href={`#${product.id}`} onClick={(e) => dispatch(addToCart(cartItems, product))}>
