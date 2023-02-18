@@ -42,15 +42,15 @@ app.get('/products',authenticateToken, (req, res) => {
 
 
 
-function authenticateToken(req, res, next) {
-  console.log(req.headers["authorization"])
+function authenticateToken( req,res, next) {
+//   console.log(req.headers["authorization"])
 	const authHeader = req.headers['authorization'];
 	// const token = authHeader && authHeader.split(' ')[1];
 	if (authHeader == null) return res.sendStatus(403);
 
 	jwt.verify(authHeader, process.env.ACCESS_TOKEN_SECRET, (err, user) => {
 		console.log(err);
-		if (err) return res.sendStatus(403);
+		if (err) return res.status(403).json({status:403,error:err.status})
 		req.user = user;
 		next();
 	});

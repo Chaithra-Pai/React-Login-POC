@@ -1,15 +1,21 @@
 import {
   FETCH_PRODUCTS,
+  FETCH_PRODUCTS_FAILED,
+  CLEAR_PRODUCT_ERROR,
   FILTER_PRODUCTS_BY_SIZE,
   ORDER_PRODUCTS_BY_PRICE,
 } from "../actions/types";
 
-const initState = { items: [], filteredItems: [], size: "", sort: "" };
+const initState = { items: [], filteredItems: [],productFetchError:"", size: "", sort: "" };
 
 export default function (state = initState, action) {
   switch (action.type) {
     case FETCH_PRODUCTS:
       return { ...state, items: action.payload, filteredItems: action.payload };
+    case FETCH_PRODUCTS_FAILED:
+      return {...state,productFetchError:action.payload}
+      case CLEAR_PRODUCT_ERROR:
+        return {...state,productFetchError:""}
     case FILTER_PRODUCTS_BY_SIZE:
       return {
         ...state,
