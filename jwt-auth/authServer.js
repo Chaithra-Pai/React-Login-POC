@@ -11,16 +11,17 @@ app.use(express.json())
 let refreshTokens = []
 
 app.post('/token', (req, res) => {
+ 
   const refreshToken = req.body.refreshToken
-  if (refreshToken == null) return res.sendStatus(401)
-  if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
+  console.log(refreshToken)
+  if (refreshToken == null) return res.status(401).send("No Refresh Token")
+  // if (!refreshTokens.includes(refreshToken)) return res.sendStatus(403)
 
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, user) => {
-    if (err) return res.sendStatus(403)
+    if (err) return res.status(403).send("jwterror")
     const accessToken = generateAccessToken({ name: user.name })
     res.json({ accessToken: accessToken })
   })
-
 })
 
 app.delete('/logout', (req, res) => {
@@ -47,7 +48,7 @@ app.post('/login', (req, res) => {
 })
 
 function generateAccessToken(user) {
-  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '15s' })
+  return jwt.sign(user, process.env.ACCESS_TOKEN_SECRET, { expiresIn: '20s' })
 }
 
 app.listen(4000)
