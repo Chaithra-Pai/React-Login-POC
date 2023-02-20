@@ -1,54 +1,53 @@
-import logo from './logo.svg';
-import './App.css';
-import Login from './components/Login/Login';
-import Products from './components/Products/Products';
-import { Provider, useDispatch } from 'react-redux';
-import store from './store';
-import { json, Route, Routes } from 'react-router-dom';
-import { history } from './history';
-import axios from 'axios';
-import jwt_decode from 'jwt-decode';
-import axiosInstance from './utils/axiosInstance';
-function App() {
-	const getNewAccessToken = async () => {
-		let refreshToken = localStorage.getItem('refreshToken');
-		let options = {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-				'Access-Control-Allow-Origin': '*',
-			},
-			redirect: 'follow', // manual, *follow, error
-			data: JSON.stringify({ refreshToken: refreshToken }), // body data type must match "Content-Type" header
-		};
-		return await axios('http://localhost:4000/token', options);
-	};
+import "./App.css";
+import Login from "./components/Login/Login";
+import Products from "./components/Products/Products";
+import { Provider } from "react-redux";
+import store from "./store";
+import { Route, Routes } from "react-router-dom";
+import { history } from "./history";
+import axios from "axios";
+import jwt_decode from "jwt-decode";
+import axiosInstance from "./utils/axiosInstance";
 
-	axiosInstance.interceptors.request.use(async (request) => {
-		let currentDate = new Date();
-		console.log(JSON.stringify(localStorage.getItem('accessToken')))
-		let accessToken = jwt_decode(localStorage.getItem('accessToken'));
-		localStorage.setItem('accessToken', localStorage.getItem('accessToken'));
-		if (accessToken.exp * 1000 < currentDate.getTime()) {
+function App() {
+  const getNewAccessToken = async () => {
+    let refreshToken = localStorage.getItem("refreshToken");
+    let options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Access-Control-Allow-Origin": "*",
+      },
+      redirect: "follow", // manual, *follow, error
+      data: JSON.stringify({ refreshToken: refreshToken }), // body data type must match "Content-Type" header
+    };
+    return await axios("http://localhost:4000/token", options);
+  };
+
+  axiosInstance.interceptors.request.use(async (request) => {
+    let currentDate = new Date();
+    let accessToken = jwt_decode(localStorage.getItem("accessToken"));
+    if (accessToken.exp < currentDate.getTime()/1000) {	
 			await getNewAccessToken().then(
-				(response) => (request.headers['authorization'] = response.data.accessToken),
+				(response) => {request.headers['authorization'] = response.data.accessToken;
+				localStorage.setItem('accessToken', response.data.accessToken)}
 			);
 		}
-		return request;
-	});
+    return request;
+  });
 
-	return (
-		<Provider store={store}>
-			<Routes history={history}>
-				<Route path="/" element={<Login />} exact />
-				<Route path="/product" element={<Products />} />
-			</Routes>
-			<div>
-				{/* <Login /> */}
-				{/* <Products /> */}
-			</div>
-		</Provider>
-	);
+  return (
+    <Provider store={store}>
+      <Routes history={history}>
+        <Route path="/" element={<Login />} exact />
+        <Route path="/product" element={<Products />} />
+      </Routes>
+      <div>
+        {/* <Login /> */}
+        {/* <Products /> */}
+      </div>
+    </Provider>
+  );
 }
 
 export default App;
