@@ -10,16 +10,9 @@ const ProductList = () => {
 
 	const cartItems = useSelector((state) => state.cart.items);
 	const { items, productFetchError } = useSelector((state) => state.products);
-console.log(items)
+
 	useEffect(() => {
-    console.log(productFetchError)
-		if (!productFetchError) {
-			dispatch(fetchProducts());
-		} else {
-			dispatch(fetchJwtToken());
       dispatch(fetchProducts());
-		}
-		return () => dispatch(clearProductError());
 	}, []);
 
 

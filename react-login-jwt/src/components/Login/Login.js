@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "./Login.css";
 import { useNavigate  } from 'react-router-dom';
+import axios from "axios";
 
 const Login = () => {
   const [userCredentials, setUserCredentials] = useState({
@@ -35,21 +36,17 @@ const Login = () => {
       },
 
       redirect: "follow", // manual, *follow, error
-      body: JSON.stringify({ username: userCredentials.email, password: userCredentials.password }), // body data type must match "Content-Type" header
+     data: { username: userCredentials.email, password: userCredentials.password }, // body data type must match "Content-Type" header
     };
 
-    fetch("http://localhost:4000/login", options).then((res) =>
-      res.json().then((data) => {
-        console.log(data)
-
+    axios("http://localhost:4000/login", options).then((response) =>{
+      let data=response.data;
         if(data.accessToken && data.refreshToken){
           localStorage.setItem("accessToken", data.accessToken);
           localStorage.setItem("refreshToken", data.refreshToken);
           routeChange();
         }   
       }).catch((err)=>console.log(err))
-    );
-
   };
 
   const routeChange = () => {
